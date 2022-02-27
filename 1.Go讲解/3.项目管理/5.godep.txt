@@ -1,0 +1,56 @@
+godep原理
+    为了能让第三方依赖包 “稳定下来”，实现项目的可重复构建
+    godep 将项目当前所依赖包的版本信息记录在 Godeps/Godeps.json 中
+    并将依赖包的相关版本存放在 Godeps/_workspace 中
+
+    在编译时 (godep go build)，godep 通过临时修改 GOPATH 环境变量的方法
+    让 Go 编译器使用缓存在 Godeps/_workspace 下的项目依赖的特定版本的第三方包
+    这样保证了项目不再受制于依赖的第三方包的主分支 (master branch) 上的最新代码变动了
+
+    不过，godep 的 “版本管理” 本质上是通过缓存第三方库的某个 revision 的快照实现的，这种方式依然让人感觉难于管理
+    同时，通过对 GOPATH 的 “偷梁换柱” 的方式实现使用 Godeps/_workspace 中的第三方库的快照进行编译
+    无法使用 Go 原生编译器项目构建，必须使用 godep go xxx 来进行编译
+
+
+godep工作原理
+    为项目建立一个文件夹project，可以建一个文件夹管理源代码
+    建立一个Godeps文件夹
+    里面有一个文件，Godeps.json，以json的形式记录则所依赖的库和版本
+    里面还有一个文件夹，_workspace
+    _workspace,里面还有src文件夹，存放第三方库的源代码
+
+    这时，项目所依赖的库还是用GOPATH 里面src的路径
+    如果正常编译，是不会使用_workspace里面的库的，因为导入的路径不对
+
+    而godep的工作是在编译阶段
+    它在编译阶段，临时把GOPATH路径修改成了_workspace的路径
+    这时，项目里面依赖的库就变成了_workspace里面的库了
+
+    但是不能使用正常的编译指令了，需要在前面加上godep
+
+    总结
+        这种思路其实和vendor很像
+        都是在项目内部存放需要依赖的库，因为只有才能实现版本控制
+        而不同点是在处理导入路径，最终都是为了让导入的路径不用修改
+        vendor是通过优先搜索vendor目录下的库
+        而godep是通过临时修改环境变量
+
+
+
+godep目录树
+    GOPATH
+        bin
+        pkg
+        src
+            github.com (外部库)
+                xxx 1.1
+
+            project (项目)
+                src (项目源代码)
+
+                Godeps
+                    Godeps.json (记录版本)
+                    _workspace (临时GOPATH)
+                        src
+                            github.com (内部库)
+                                xxx 1.2

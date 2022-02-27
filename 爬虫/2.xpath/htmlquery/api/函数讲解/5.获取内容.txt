@@ -1,0 +1,18 @@
+获取
+    func InnerText(n *html.Node) string
+        返回对象的开始和结束标签之间的文本
+
+
+
+    func SelectAttr(n *html.Node, name string) (val string)
+        返回指定名称的属性值，也就是获取标签的属性值
+
+
+
+    func OutputHTML(n *html.Node, self bool) string
+        返回包含标签名称的源码
+        self表示是否匹配标签本身
+
+
+
+都可以用xpath语法实现

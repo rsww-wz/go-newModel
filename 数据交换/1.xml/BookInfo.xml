@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<Person>
+	<Name>小明</Name>
+	<Gender>false</Gender>
+	<Age>14</Age>
+	<Telephone>15119657172</Telephone>
+	<Book>
+		<Name>西游记</Name>
+		<Author>吴承恩</Author>
+		<Price>79</Price>
+	</Book>
+</Person>

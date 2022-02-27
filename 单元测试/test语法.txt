@@ -1,0 +1,57 @@
+testing.T
+    判定失败接口
+        Fail    失败继续
+        FailNow 失败终止
+
+    打印信息接口
+        Log  数据流 （cout　类似）
+        Logf format (printf 类似）
+
+    SkipNow 跳过当前测试
+    Skiped  检测是否跳过
+
+
+
+testing.B
+    testing.B                            拥有testing.T 的全部接口
+    SetBytes( i uint64)                  统计内存消耗， 如果你需要的话
+    SetParallelism(p int)                制定并行数目
+
+    StartTimer / StopTimer / ResertTimer 操作计时器
+
+
+
+testing.PB
+    Next() 接口 。 判断是否继续循环
+
+
+
+综合接口产生：
+    Error / Errorf 报告出错继续 [ Log / Logf + Fail ]
+    Fatel / Fatelf 报告出错终止 [ Log / Logf + FailNow ]
+    Skip / Skipf   报告并跳过 [ Log / Logf + SkipNow ]
+
+
+基准测试
+    测试所有go文件
+        go test -bench=".*"
+        go test -bench=".*" .
+        go test -bench=.
+
+    测试指定go文件
+        go test -bench=".*" hash_b_test.go hash.go
+
+    -benchtime=3s    指定运行时间
+    -benchmem        打印出，分配内存数次和分配的总内存
+
+    -bench regexp   执行相应的 benchmarks，例如 -bench=.
+    -cover          开启测试覆盖率
+    -run regexp     只运行 regexp 匹配的函数，例如 -run=Array 那么就执行包含有 Array 开头的函数
+    -v              显示测试的详细命令
+
+
+    提示：
+        go test 会测试整个包
+        go test hash_test.go
+            当测试单独一个文件时，提示找不到引用的包时
+            后面加上源代码文件，如go test hash_test.go hash.go

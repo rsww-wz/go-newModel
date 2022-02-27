@@ -1,0 +1,35 @@
+爬虫主要分别两个部分
+    请求数据
+    解析数据
+
+
+请求数据
+    数据类型
+        HTML
+        Ajax
+        json
+
+
+    难点
+        反扒措施
+        登录
+        验证码
+
+
+解析数据
+    完全当成文本解析
+        regexp
+
+
+    xpath选择器 (xpath语法)
+        htmlquery
+            go get github.com/antchfx/htmlquery
+
+        libxml2
+             go get github.com/lestrrat-go/libxml2
+
+
+
+    css选择器 (css语法)
+        goquery
+            go get github.com/PuerkitoBio/goquery

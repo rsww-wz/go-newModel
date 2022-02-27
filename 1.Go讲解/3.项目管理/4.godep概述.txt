@@ -1,0 +1,13 @@
+godep介绍
+    godep 是golang 的包管理工具，是解决包依赖的管理工具，是目前最主流的一种
+    原理是扫描记录版本控制的信息来做到依赖管理
+
+    godep 建议在 golang 1.6 以后使用
+    godep 依赖 vendor ，请做好 vendor 管理
+
+
+godep解决的问题
+    godep是建立在vendor的基础之上的
+    vendor解决了依赖版本冲突问题
+    但是没有解决依赖更新的问题
+    而godep的作用就是在vendor的基础上，解决依赖更新的问题

@@ -1,0 +1,73 @@
+由于配置的字段非常多，比较麻烦
+所以系统提供了几个常用的预设
+如果有需要改动的地方
+也可以在预设配置的基础上进行改动，不必要重写全写一遍配置
+
+
+// Production编码器配置
+func NewProductionEncoderConfig() zapcore.EncoderConfig {
+	return zapcore.EncoderConfig{
+		TimeKey:        "ts",
+		LevelKey:       "level",
+		NameKey:        "logger",
+		CallerKey:      "caller",
+		FunctionKey:    zapcore.OmitKey,
+		MessageKey:     "msg",
+		StacktraceKey:  "stacktrace",
+		LineEnding:     zapcore.DefaultLineEnding,
+		EncodeLevel:    zapcore.LowercaseLevelEncoder,
+		EncodeTime:     zapcore.EpochTimeEncoder,
+		EncodeDuration: zapcore.SecondsDurationEncoder,
+		EncodeCaller:   zapcore.ShortCallerEncoder,
+	}
+}
+
+
+// Production函数配置 (json格式输出，调试级别不记录，Error，Dpanic级别记录，跟踪堆栈)
+func NewProductionConfig() Config {
+	return Config{
+		Level:       NewAtomicLevelAt(InfoLevel),
+		Development: false,
+		Sampling: &SamplingConfig{
+			Initial:    100,
+			Thereafter: 100,
+		},
+		Encoding:         "json",
+		EncoderConfig:    NewProductionEncoderConfig(),
+		OutputPaths:      []string{"stderr"},
+		ErrorOutputPaths: []string{"stderr"},
+	}
+}
+
+
+// Development编码器配置
+func NewDevelopmentEncoderConfig() zapcore.EncoderConfig {
+	return zapcore.EncoderConfig{
+		// Keys can be anything except the empty string.
+		TimeKey:        "T",
+		LevelKey:       "L",
+		NameKey:        "N",
+		CallerKey:      "C",
+		FunctionKey:    zapcore.OmitKey,
+		MessageKey:     "M",
+		StacktraceKey:  "S",
+		LineEnding:     zapcore.DefaultLineEnding,
+		EncodeLevel:    zapcore.CapitalLevelEncoder,
+		EncodeTime:     zapcore.ISO8601TimeEncoder,
+		EncodeDuration: zapcore.StringDurationEncoder,
+		EncodeCaller:   zapcore.ShortCallerEncoder,
+	}
+}
+
+
+// Development函数配置 (行输出，打印包/文件/行(方法)，添加的字段在行尾以json字符串输出)
+func NewDevelopmentConfig() Config {
+	return Config{
+		Level:            NewAtomicLevelAt(DebugLevel),
+		Development:      true,
+		Encoding:         "console",
+		EncoderConfig:    NewDevelopmentEncoderConfig(),
+		OutputPaths:      []string{"stderr"},
+		ErrorOutputPaths: []string{"stderr"},
+	}
+}

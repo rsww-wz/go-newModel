@@ -1,0 +1,44 @@
+标准日志库
+    Golang log模块主要提供了3类接口
+    分别是 “Print 、Panic 、Fatal ”
+    对每一类接口其提供了3中调用方式
+        分别是 "Xxxx 、 Xxxxln 、Xxxxf"
+        基本和fmt中的相关函数类似
+
+
+Log三类方法
+    Print() 用于输出日志
+    Fatal() 输出日志的同时，调用os.Exit(1)方法退出，小提示：如果函数下存在defer不会执行
+    Panic() 输出日志的同时，调用panic方法，但defer会执行
+
+
+区别
+    Fatal会保存日志并终止程序
+    Panic会保存日志并丢出异常终止程序
+    Print会保存日志但是程序继续
+
+    跟fmt.Print不同的地方在于
+    fmt.Print,fmt.Fatal,fmt.Panic属于Stdout输出
+    log.Print属于Stderr输出
+
+
+输出内容
+    print类
+        记录日志日期   时间    报错信息(通过参数传递)
+
+    panic类
+        记录日志日期   时间    报错信息(通过参数传递)
+        panic: 报错信息
+
+    fatal类
+        记录日志日期   时间    报错信息(通过参数传递)
+        exit status 1
+
+
+
+log.Fatal 接口
+    会先将日志内容打印到标准输出
+    接着调用系统的 os.exit(1) 接口
+    退出程序并返回状态 1
+
+    但是有一点需要注意，由于是直接调用系统接口退出，defer函数不会被调用

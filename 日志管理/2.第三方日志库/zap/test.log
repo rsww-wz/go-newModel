@@ -1,0 +1,4 @@
+2022-01-17T01:29:15.441+0800	INFO	zap/main.go:17	this is info message
+2022-01-17T01:29:15.449+0800	INFO	zap/main.go:18	this is aaa, 1234
+2022-01-17T01:29:15.449+0800	ERROR	zap/main.go:19	this is error message
+2022-01-17T01:29:15.449+0800	INFO	zap/main.go:20	this is info message

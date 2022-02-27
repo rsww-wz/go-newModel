@@ -1,0 +1,45 @@
+logger
+    logger是一种相对高级的用法
+    对于一个大型项目, 往往需要一个全局的logrus实例
+    即logger对象来记录项目所有的日志
+
+
+如何使用
+    全局logger对象在项目中的任何地方都可以使用
+    它要做的就是事无巨细，把所有日志全部记录
+    所以要把日志级别设定到最低
+
+    但是这样对于同一条日志可能需要记录多遍
+    因为其他分类中是正常记录，现在要为全局再记录一遍
+
+    注意全局logger是直接调用函数的
+    而局部的日志记录是通过包名调用函数的
+
+
+func logrus.New() *logger
+    logrus 提供了New函数来创建一个logrus实例
+    项目中，可以创建任意数量的logrus实例
+    返回值就是一个实例，可以直接修改里面的属性，不需要用函数修改
+
+    type Logger struct {
+    	Out io.Writer
+    	Hooks LevelHooks
+    	Formatter Formatter
+    	ReportCaller bool
+    	Level Level
+    	mu MutexWrap
+    	entryPool sync.Pool
+    	ExitFunc exitFunc
+    }
+
+
+    func New() *Logger {
+    	return &Logger{
+    		Out:          os.Stderr,
+    		Formatter:    new(TextFormatter),
+    		Hooks:        make(LevelHooks),
+    		Level:        InfoLevel,
+    		ExitFunc:     os.Exit,
+    		ReportCaller: false,
+    	}
+    }

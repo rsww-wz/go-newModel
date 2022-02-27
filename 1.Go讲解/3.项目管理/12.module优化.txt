@@ -1,0 +1,80 @@
+go module开关
+    Go module 机制在 Go 1.11 版本中是试验特性
+    GO111MODULE 这个临时的环境变量就是 go module 特性的试验开关
+    GO111MODULE 有三个值：auto、on 和 off，默认值为 auto
+    GO111MODULE 的值会直接影响 Go 编译器的 “包依赖管理” 工作模式的选择
+
+    当 GO111MODULE = off 时
+        go module 试验特性关闭
+        Go 编译器会始终使用 gopath mode
+        即无论要构建的源码目录是否在 GOPATH 路径下
+        Go 编译器都会在传统的 GOPATH 和 vendor 目录下搜索目标程序依赖的 go 包
+
+    当 GO111MODULE = on 时 (export GO111MODULE=on)，
+        go module 试验特性始终开启
+        Go 编译器会始终使用 module mode
+        即不管要构建的源码目录是否在 GOPATH 路径下
+        Go 编译器都不会在传统的 GOPATH 和 vendor 目录下搜索目标程序依赖的 go 包
+        而是在 go module 的缓存目录 (默认 $GOPATH/pkg/mod) 下搜索对应版本的依赖包
+
+    当 GO111MODULE = auto 时
+        不显式设置即为 auto
+        使用 gopath mode 还是 module mode
+        取决于要构建的源码目录所在位置以及是否包含 go.mod 文件
+        如果要构建的源码目录不在以 GOPATH/src 为根的目录体系下且包含 go.mod 文件 (两个条件缺一不可)
+        那么 Go 编译器将使用 module-aware mode
+        否则使用传统的 gopath mode
+
+
+
+
+go module优化
+    在 Go 1.11 中，为了获取一个 module 下的包
+        我们需要显式地创建一个 go.mod 文件，否则就会报错
+        这显然非常不方便
+
+
+    Go 1.12 版本对该问题进行了优化
+        当 GO111MODULE=on 时
+        获取 go module 无需再显式创建一个 go.mod 文件了
+
+
+    在 Go 1.13 版本中
+        module mode 的优先级得到了提升
+        虽然 GO111MODULE 的默认值依然为 auto
+        但 auto 值下 Go 编译器的行为模式发生了变化
+            无论是在 GOPATH/src 下还是 GOPATH 之外的仓库中
+            只要目录下有 go.mod
+            Go 编译器都会使用 module mode 来管理包依赖
+
+
+    Go 1.14 版本中
+        go module 的运作机制、命令及其参数形式、行为特征已趋稳定，可用于生产环境了
+        GO111MODULE 的值对 “包依赖管理” 工作模式的选择以及行为模式变动如下
+
+        在 module mode 下，如果 go.mod 中 go version 是 go 1.14 及以上，且当前仓库顶层目录下有 vendor 目录
+            那么 go 工具链将默认使用 vendor(即 -mod=vendor) 中的包
+            而不是 module cache 中的 ($GOPATH/pkg/mod 下)
+
+            同时在这种模式下，go 工具会校验 vendor/modules.txt 与 go.mod 文件以确保它们保持同步
+            在此模式下，如要非要使用 module cache 中的包进行构建
+            则需要为 go 工具链显式传入 -mod=mod ，比如：go build -mod=mod ./...
+
+
+        在 module mode 下
+            如果没有建立 go.mod 或 go 工具链无法找到 go.mod
+            那么你必须显式传入要处理的 go 源文件列表，否则 go 工具链将需要你明确建立 go.mod
+
+            比如：在一个没有 go.mod 的目录下，要编译一个 hello.go
+            我们需要使用 go build hello.go，即 hello.go 需要显式放在命令后面
+            如果你执行 go build .，就会得到报错错信息
+
+            也就是说在没有 go.mod 的情况下，go 工具链的功能是受限的
+
+
+
+工具链
+    go.mod 文件一旦创建
+    它的内容就会被 go 工具链全面掌控
+    go 工具链会在各类命令执行时维护 go.mod 文件
+    比如：go get、go build、go mod 等

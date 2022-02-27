@@ -1,0 +1,16 @@
+htmlquery
+    htmlquery不是请求库
+    而是解析库
+
+    它的作用是把HTML文本解析成HTML树
+    使他可以用xpath的语法
+
+    Python里面有神器lxml
+    go里面可以选择htmlquery或者goquery
+
+    其中htmlquery使用xpath选择器
+    goquery使用css选择器
+
+
+下载
+    go get github.com/antchfx/htmlquery

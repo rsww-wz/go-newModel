@@ -1,0 +1,27 @@
+jQuery 通常具有同一函数的许多变体（无参数、selector字符串参数、jQuery 对象参数、DOM 元素参数等）
+为了在goquery中公开具有可变空接口参数的同样特性的单个方法，按照以下命名约定使用静态类型标识
+    当 jQuery 等效项没有参数可以被调用时
+        它具有与无参数标识的 jQuery 相同的名称（例如：Prev()）
+        并且具有一个selector字符串参数的版本称为XxxFiltered()（例如：PrevFiltered())
+
+    当 jQuery 等效项需要一个参数时
+        selector字符串版本使用与 jQuery 相同的名称（例如：Is())
+
+    接受 jQuery 对象作为参数的标
+        在 goquery 中定义为XxxSelection()
+        并且将*Selection对象作为参数（例如：FilterSelection())
+
+    在 jQuery 中接受 DOM 元素作为参数的标识
+        在 goquery 中定义为XxxNodes()
+        并具有类型的可变参数*html.Node（例如：FilterNodes())
+
+    在 jQuery 中接受函数作为参数的标识
+        在 goquery 中定义为XxxFunction()
+        并且将函数作为参数（例如：FilterFunction())
+
+    可以用selector字符串调用的goquery方法有一个对应的版本
+        该版本采用Matcher接口，定义为XxxMatcher()
+
+    不在 jQuery 中但在 Go 中有用的实用程序函数作为函数实现（以*Selection 为参数）
+        以避免*Selection方法上的潜在命名冲突（为 jQuery 等效行为保留）
+

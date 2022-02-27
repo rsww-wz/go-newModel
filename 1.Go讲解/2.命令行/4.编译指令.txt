@@ -1,0 +1,44 @@
+使用
+    1. 按文件编译 -- 普通包 【非main包】
+        go build add.go              【编译add.go,不生成exe执行文件】
+        go build -o add.exe add.go   【指定生成exe执行文件，但是不能运行此文件，不是main包】
+
+    2. 按包编译  -- main包【package main】
+        go build main.go                【生成exe执行文件】
+        go build -o main.exe main.go    【指定生成main.exe执行文件】
+
+    3. 按目录编译
+        进入文件的目录
+        go build/go build .                【默认编译当前目录下的所有go文件】
+        go build add.go subtraction.go     【编译add.go 和 subtraction.go】
+
+    4.多文件编译 -- 【普通包/main包/目录】
+        可以在go build 的后面提供多个文件名
+        go build 会编译这些源码，输出可执行文件
+        例如：go build file1.go  file2.go
+
+        注意：文件列表中的每个文件必须是同一个包的Go文件
+            这种方式适用于编写只有少量文件的工具
+
+
+总结
+    1. 如果是普通包，当你执行go build之后，它不会产生任何文件。【非main包】
+
+    2. 如果是main包，当你执行go build之后
+        它就会在当前目录下生成一个可执行文件exe
+        如果你需要在$GOPATH/bin下生成相应的文件，需要执行go install
+        或者使用go build -o 路径/xxx.exe xxx.go
+
+    3. 如果某个项目文件夹下有多个文件
+        你只想编译某个文件，就可在go build之后加上文件名，例如go build xxx.go
+        go build命令默认会编译当前目录下的所有go文件
+
+    4. 可以指定编译输出的文件名
+        我们可以指定go build -o xxxx.exe
+        可执行文件默认选择文件列表中第一个源码文件作为可执行文件名输出
+        默认情况是你的package名(main包)
+        或者是第一个源文件的文件名(main包)
+
+    5.go build会忽略目录下以"_"或"."开头的go文件
+        也就是以下划线和句点开头的go文件
+

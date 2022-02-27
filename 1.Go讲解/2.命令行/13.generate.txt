@@ -1,0 +1,14 @@
+作用
+    官方的代码生成器
+
+语法指令
+    go generate [-run regexp] [-n] [-v] [-x] [build flags] [file.go... | packages]
+
+
+注意事项
+    该特殊注释必须包含在.go源码文件中
+    每个源码文件可以包含多个generate特殊注释
+    go generate不会被类似go build，go get，go test等命令触发执行，必须由开发者显式使用
+    命令执行是串行的，如果出错，后续命令不再执行
+    特殊注释必须以“//go:generate”开头，双斜线之后没有空格
+    执行命令必须是系统PATH（echo $PATH）下的可执行程序

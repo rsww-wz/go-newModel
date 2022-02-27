@@ -1,0 +1,51 @@
+全局函数可以直接调用相应级别函数记录日志
+它有4中形式的函数，格式化记录，不换行记录，换行记录，函数记录
+
+不换行记录
+    func Trace(args ...interface{})
+    func Debug(args ...interface{})
+    func Print(args ...interface{})
+    func Info(args ...interface{})
+    func Warn(args ...interface{})
+    func Warning(args ...interface{})
+    func Error(args ...interface{})
+    func Fatal(args ...interface{})
+    func Panic(args ...interface{})
+
+
+换行记录
+    func Traceln(args ...interface{})
+    func Debugln(args ...interface{})
+    func Println(args ...interface{})
+    func Infoln(args ...interface{})
+    func Warnln(args ...interface{})
+    func Warningln(args ...interface{})
+    func Errorln(args ...interface{})
+    func Fatalln(args ...interface{})
+    func Panicln(args ...interface{})
+
+
+格式化记录
+    func Tracef(format string, args ...interface{})
+    func Debugf(format string, args ...interface{})
+    func Printf(format string, args ...interface{})
+    func Infof(format string, args ...interface{})
+    func Warnf(format string, args ...interface{})
+    func Warningf(format string, args ...interface{})
+    func Errorf(format string, args ...interface{})
+    func Fatalf(format string, args ...interface{})
+    func Panicf(format string, args ...interface{})
+
+
+函数记录
+    从函数中记录消息
+
+    func TraceFn(fn logFunction)
+    func DebugFn(fn logFunction)
+    func PrintFn(fn logFunction)
+    func InfoFn(fn logFunction)
+    func WarnFn(fn logFunction)
+    func WarningFn(fn logFunction)
+    func ErrorFn(fn logFunction)
+    func FatalFn(fn logFunction)
+    func PanicFn(fn logFunction)

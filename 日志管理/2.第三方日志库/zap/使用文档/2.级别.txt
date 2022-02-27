@@ -1,0 +1,15 @@
+日志级别
+    Level：日志级别,只不过它需要的类型是AtomicLevel
+    所以需要使用zap.NewAtomicLevelAt
+
+
+7个级别
+    默认级别是InfoLevel
+
+    DebugLevel Level = iota - 1
+    InfoLevel                   默认级别
+    WarnLevel
+    ErrorLevel                  项目运行，错误的日志
+    DPanicLevel                 记录消息后，如果是开发环境，则调用panic
+    PanicLevel                  记录消息后，调用panic
+    FatalLevel                  记录消息后，调用os.Exit(1)

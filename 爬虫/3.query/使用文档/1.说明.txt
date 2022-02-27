@@ -1,0 +1,21 @@
+goquery类似jquery，它是jquery的go版本实现，使用它，可以很方便的对HTML进行处理
+goquery是基于Go net/html包和css选择器库 cascadia
+由于net/html解析器返回的是DOM节点,而不是完整的DOM树
+因此, jQuery的状态操作函数没有实现(像height(), css(), detach)
+
+注意：goquery只支持utf-8编码，其他编码需要转换
+地址: go get github.com/PuerkitoBio/goquery
+
+
+goquery对外暴露两个struct
+    Document
+    Selection
+
+    一个interface：Matcher
+
+
+与 jQuery 不同
+    jQuery 作为 DOM 文档的一部分加载，因此对包含的文档进行行为
+    goquery 不知道要对哪个 HTML 文档进行操作
+    因此，它需要被告知Document
+    它持有根文档节点作为要操作的初始Selection值

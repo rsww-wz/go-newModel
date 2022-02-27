@@ -1,0 +1,111 @@
+zap.Config结构体
+    Level AtomicLevel                      `json:"level" yaml:"level"`
+    Development bool                       `json:"development" yaml:"development"`
+    DisableCaller bool                     `json:"disableCaller" yaml:"disableCaller"`
+    DisableStacktrace bool                 `json:"disableStacktrace" yaml:"disableStacktrace"`
+    Sampling *SamplingConfig               `json:"sampling" yaml:"sampling"`
+    Encoding string                        `json:"encoding" yaml:"encoding"`
+    EncoderConfig zapcore.EncoderConfig    `json:"encoderConfig" yaml:"encoderConfig"`
+    OutputPaths []string                   `json:"outputPaths" yaml:"outputPaths"`
+    ErrorOutputPaths []string              `json:"errorOutputPaths" yaml:"errorOutputPaths"`
+    InitialFields map[string]interface{}   `json:"initialFields" yaml:"initialFields"`
+
+
+zap.Config配置说明
+    Level                日志级别,只不过它需要的类型是AtomicLevel。所以需要使用zap.NewAtomicLevelAt
+    Development          是否是开发环境。如果是开发模式，对DPanicLevel进行堆栈跟踪
+    DisableCaller        不显示调用函数的文件名称和行号。默认情况下，所有日志都显示。
+    DisableStacktrace    是否禁用堆栈跟踪捕获。默认对Warn级别以上和生产error级别以上的进行堆栈跟踪。
+    Sampling             抽样策略。设置为nil禁用采样。（我自己没用过，有需求的朋友可以研究下）
+    Encoding             编码方式，支持json, console, 也支持自定义（需要通过RegisterEncoder注册）
+    EncoderConfig        生成格式的一些配置，后面详细介绍
+    OutputPaths          是url或文件路径列表，用于写入日志输出。
+    ErrorOutputPaths     内部日志程序错误路径列表。默认为标准错误。
+    InitialFields        加入一些初始的字段数据，比如项目名
+
+
+
+zap.Config.EncoderConfig结构体
+type EncoderConfig struct {
+	MessageKey     string                   `json:"messageKey" yaml:"messageKey"`
+	LevelKey       string                   `json:"levelKey" yaml:"levelKey"`
+	TimeKey        string                   `json:"timeKey" yaml:"timeKey"`
+	NameKey        string                   `json:"nameKey" yaml:"nameKey"`
+	CallerKey      string                   `json:"callerKey" yaml:"callerKey"`
+	FunctionKey    string                   `json:"functionKey" yaml:"functionKey"`
+	StacktraceKey  string                   `json:"stacktraceKey" yaml:"stacktraceKey"`
+	SkipLineEnding bool                     `json:"skipLineEnding" yaml:"skipLineEnding"`
+	LineEnding     string                   `json:"lineEnding" yaml:"lineEnding"`
+
+	EncodeLevel    LevelEncoder             `json:"levelEncoder" yaml:"levelEncoder"`
+	EncodeTime     TimeEncoder              `json:"timeEncoder" yaml:"timeEncoder"`
+	EncodeDuration DurationEncoder          `json:"durationEncoder" yaml:"durationEncoder"`
+	EncodeCaller   CallerEncoder            `json:"callerEncoder" yaml:"callerEncoder"`
+	EncodeName     NameEncoder              `json:"nameEncoder" yaml:"nameEncoder"`
+
+	NewReflectedEncoder func(io.Writer) ReflectedEncoder    `json:"-" yaml:"-"`
+	ConsoleSeparator string                                 `json:"consoleSeparator" yaml:"consoleSeparator"`
+}
+
+
+EncoderConfig配置说明
+    MessageKey                              输入信息的key名
+    LevelKey                                输出日志级别的key名
+    TimeKey                                 输出时间的key名
+    NameKey
+    CallerKey
+    StacktraceKey
+    FunctionKey                            跟以上类似，看名字就知道
+
+    LineEnding                              每行的分隔符。基本zapcore.DefaultLineEnding 即"\\n"
+    EncodeLevel                             基本zapcore.LowercaseLevelEncoder。将日志级别字符串转化为小写
+    EncodeTime                              输出的时间格式
+    EncodeDuration                          一般zapcore.SecondsDurationEncoder,执行消耗的时间转化成浮点型的秒
+    EncodeCaller                            一般zapcore.ShortCallerEncoder，以包/文件:行号 格式化调用堆栈
+    EncodeName                              可选值
+
+
+
+别人的配置
+zap.Config{
+        Level:             zap.NewAtomicLevelAt(zap.DebugLevel),
+        Development:       false,
+        DisableCaller:     false,
+        DisableStacktrace: false,
+        Sampling:          nil,
+        Encoding:          "json",
+        EncoderConfig: zapcore.EncoderConfig{
+            MessageKey:     "msg",
+            LevelKey:       "level",
+            TimeKey:        "time",
+            NameKey:        "logger",
+            CallerKey:      "file",
+            StacktraceKey:  "stacktrace",
+            LineEnding:     zapcore.DefaultLineEnding,
+            EncodeLevel:    zapcore.LowercaseLevelEncoder,
+            EncodeTime:     zapcore.ISO8601TimeEncoder,
+            EncodeDuration: zapcore.SecondsDurationEncoder,
+            EncodeCaller:   zapcore.ShortCallerEncoder,
+            EncodeName:     zapcore.FullNameEncoder,
+        },
+        OutputPaths:      []string{"/tmp/zap.log"},
+        ErrorOutputPaths: []string{"/tmp/zap.log"},
+        InitialFields: map[string]interface{}{
+            "app": "test",
+        },
+    }
+
+
+encoderConfig := zapcore.EncoderConfig{
+        MessageKey:     "msg",
+        LevelKey:       "level",
+        TimeKey:        "time",
+        NameKey:        "logger",
+        CallerKey:      "caller",
+        StacktraceKey:  "stacktrace",
+        LineEnding:     zapcore.DefaultLineEnding,
+        EncodeLevel:    zapcore.LowercaseLevelEncoder,  // 小写编码器
+        EncodeTime:     zapcore.ISO8601TimeEncoder,     // ISO8601 UTC 时间格式
+        EncodeDuration: zapcore.SecondsDurationEncoder,
+        EncodeCaller:   zapcore.FullCallerEncoder,      // 全路径编码器
+    }

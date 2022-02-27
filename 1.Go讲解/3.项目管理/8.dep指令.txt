@@ -1,0 +1,74 @@
+dep的命令介绍
+    初始化：dep init
+    安装依赖包：dep ensure -add github.com/bitly/go-simplejson@v1.0.1
+    更新依赖包：dep ensure -update 也可以单独更新一个包
+
+    同步配置：dep ensure
+        四种情况
+            工程中引入包
+            移除包
+            Gopkg.toml规则修改
+            不确定情况
+
+
+    状态信息：dep status
+        CONSTRAINT  为Gopkg.toml中限定的版本
+        VERSION     为当前vendor中的版本
+        REVISION    为当前vendor中的修订号
+        LATEST      为CONSTRAINT限定下github中能满足要求的最新版本
+
+
+    清理无用包或文件 ：dep prune
+        non-go=true             清理无用的go文件
+        go-tests=true           清理测试文件
+        unused-packages=true    清理无用的依赖包
+
+
+    删除依赖包：dep ensure
+        dep并没有删除依赖包的命令
+        要删除依赖包首先在你的源代码中删除包的引用和调用
+        手动删除Gopkg.toml文件中的规则
+        最后执行dep ensure命令
+
+       把依赖规则删除了，再执行同步命令，就会删除依赖文件
+
+
+版本规则
+    =             等于
+    !=            不等于
+    >             大于
+    <             小于
+    >=            大于或等于
+    <=            小于或等于
+    -             文字范围。 如: 1.2 - 1.4.5相当于>= 1.2, <= 1.4.5
+    ~             次版本号范围。如: ~1.2.3相当于>= 1.2.3, < 1.3.0
+    ^             主版本号范围。特别说明：前面没有任何符号相当于^。如: ^1.2.3相当于>= 1.2.3, < 2.0.0，1.2.3相当于^1.2.3
+   [xX*]          通配符. 如: 1.2.x相当于>= 1.2.0, < 1.3.0
+
+
+
+Gopkg.toml详解
+    required = ["github.com/user/thing/cmd/thing"]  // 手动加载文件
+    ignored = ["github.com/user/project/pkgX"]      // solving函数忽略文件
+
+    [[constraint]]                                  // 依赖规则
+      name = "github.com/user/project2"             // 包命，正常来说也会通过包名查找源代码下载地址
+      source = "github.com/myfork/project2"         // 当查不到地址时，手动指定地址
+      version = "1.0.0"                             // 包版本规则
+      branch = "master"                             // 分支
+      revision = "abc123"                           // 修订号
+
+    [[override]]                                    // 覆盖。依赖包产生冲突时，会覆盖掉普通依赖“慎用”
+      name = "github.com/x/y"
+      version = "2.4.0"
+      [metadata]                                    // 自定义的数据，用于包下载
+      propertyX = "valueX"
+
+    [prune]                                         // 裁剪
+      non-go = true                                 // 清理无用go文件
+      unused-packages = true                        // 清理无用依赖包
+
+    [[prune.project]]                               // 可单独对某个依赖包制定规则
+      name = "github.com/project/name"
+      go-tests = true                               // 清理测试文件
+      non-go = false

@@ -1,0 +1,26 @@
+xpath索引语法
+    xpath的语法直接索引，下标是从1开始的
+    最后一个位置：[last()]
+
+    给定条件：[position()<K]
+    [position()<K]最后会转换成bool，如果是TRUE就截止，反之，下标还是从1开始
+    6>5 -> true -> 1,2,3,4,5,6
+
+
+
+语法格式
+    路径/标签[index]
+
+    last()
+    position()
+    这两个都是变量，可以直接写在index的位置
+
+
+position()详解
+
+
+
+示例
+    //div/a[1]
+    //div/a[last()]
+    //div/a[position() > 5]

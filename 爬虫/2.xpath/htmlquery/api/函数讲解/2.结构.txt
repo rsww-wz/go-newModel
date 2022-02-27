@@ -1,0 +1,34 @@
+Node结点
+    它是本包的核心结构
+    几乎所有API的返回值都是这个结构的指针
+
+
+type Node struct {
+	Parent, FirstChild, LastChild, PrevSibling, NextSibling *Node
+
+	Type      NodeType
+	DataAtom  atom.Atom
+	Data      string
+	Namespace string
+	Attr      []Attribute
+}
+
+    Parent, FirstChild, LastChild, PrevSibling, NextSibling
+	    这5个字段的属性，都是Node结点的指针，分别表示
+	        本结点的父母节点
+	        本结点的第一个孩子结点
+	        本结点的最后一个孩子结点
+	        本结点的第一个姐姐或者哥哥结点 (同级别，在我上面的第一个结点)
+	        本结点的第一个弟弟或者妹妹结点 (同级别，在我下面的第一个结点)
+
+
+    Type        NodeType (uint32)   文本类型(映射关系)
+    DataAtom    atom.Atom (uint32)  字符串的整数代码，零值映射到""
+    Data        string              标签的内容
+    Namespace   string              标签的名称
+    Attr        []Attribute         标签的名称，属性，属性值
+
+
+type Attribute struct {
+	Namespace, Key, Val string
+}

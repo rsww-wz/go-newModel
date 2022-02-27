@@ -1,0 +1,65 @@
+log标准库提供的日志是不分级别的
+一般日常工作中都会根据级别记录日志
+所以可以自定义实现日志级别功能
+
+
+常用日志级别
+    Trace       几乎记录任何东西
+    Info        重要信息
+    Warning     警告
+    Error       错误
+
+
+创建自定义级别
+    用全局变量定义日志级别
+    类型是 *log.Logger
+
+
+自定义
+    log.New()
+        func New(out io.Writer, prefix string, flag int) *Logger
+        参数
+            输出    指定logger往哪里写
+            前缀    一般是自定义级别的名称
+            标志位  记录那些信息
+
+        返回值：自定义的logger
+
+    输出
+        Trace            ioutil.Discard
+        Info,Warning     os.Stdout
+        Error            io.MultiWriter(file,os.Stderr)
+
+
+    ioutil.Discard作用
+        它是一个实现了io.Writer接口的变量
+        它的值是一个空结构体，这个空结构体实现了Writer接口
+        如果往这个地方写日志，就相当于什么都没写
+        为什么要这么做？
+            因为它是一个变量，起到占位的作用，相当于一个开关
+            不想写入的时候，就用Discard
+            当想写入的时候，就给它赋值一个Writer即可
+
+
+    Stdin，Stdout，Stderr
+        它们的类型都是文件的指针类型
+        都是实现了io.Writer接口
+
+
+    io.MultiWriter(file,os.Stderr)
+        func MultiWriter(writers ...Writer) Writer
+        作用：接收多个Writer，返回一个Writer
+        整合所以的Writer到一个Writer里面
+
+        记录错误的日志就可以写在一个io.Writer里面
+        但是会在file,os.Stderr都打印出错误
+
+
+使用
+    可以直接使用自定义的级别调用日志输出函数
+    自定义的类型都实现了日志打印和设置格式的函数
+
+    Trace.print()
+    Info.println()
+    Warning.Panic()
+    Error.Fatal()

@@ -1,0 +1,9 @@
+选择器
+    func QuerySelector(top *html.Node, selector *xpath.Expr) *html.Node
+        节点通过指定的XPath选择器
+        返回第一个匹配的html
+
+
+
+    func QuerySelectorAll(top *html.Node, selector *xpath.Expr) []*html.Node
+        搜索所有的html，匹配指定XPath选择器的节点

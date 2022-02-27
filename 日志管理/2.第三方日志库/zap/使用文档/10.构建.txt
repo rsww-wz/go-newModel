@@ -1,0 +1,48 @@
+配置说明
+    所有配置
+        Level AtomicLevel
+        Development bool
+        DisableCaller bool
+        DisableStacktrace bool
+        Sampling *SamplingConfig
+        Encoding string
+        EncoderConfig zapcore.EncoderConfig
+        OutputPaths []string
+        ErrorOutputPaths []string
+        InitialFields map[string]interface{}
+
+    其中，重要要的是以下几个配置，其他可以不管(不用输入)
+        Level           日志级别
+        DisableCaller   是否显示函数名，文件，行号
+        Encoding        编码方式
+        EncoderConfig   编码器配置
+        OutputPaths     输出日志路径
+
+        其他配置可以根据需求自行配置
+
+
+根据配置构建对象，有两种方法
+    方法1 (完整构建)
+        func (cfg Config) Build(opts ...Option) (*Logger, error)
+            Config对象已经包含了所有的配置
+            如果得到Config对象，就可以调用它下面build方法，可以快速构建logger对象
+            一般不需要传参数
+
+    方法2 (快速构建)
+        func NewCore(enc Encoder, ws WriteSyncer, enab LevelEnabler) Core
+        func New(core zapcore.Core, options ...Option) *Logger
+
+        Config配置最主要的就是三个配置
+            编码器，日志写入路径，日志级别
+            把这三个配置传入NewCore，就已经基本完成了Config配置
+            会返回Core，它是一个接口
+            它可以看做是config配置的核心部分
+
+        把这个核心部分传进New函数，就会根据配置创建logger对象
+        如果有其他需要配置的字段，可以调用函数实现
+
+        如：
+            caller := zap.AddCaller()
+            development := zap.Development()
+
+            logger := zap.New(Core,caller,development)

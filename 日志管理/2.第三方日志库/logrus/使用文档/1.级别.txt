@@ -1,0 +1,18 @@
+logrus有7个日志等级,分别为
+     Trace
+     Debug
+     Info
+     Warn
+     Error
+     Fatal
+     Panic
+
+
+比较全的日志级别
+    TraceLevel: 追踪级别
+    DebugLevel: 调试级别
+    InfoLevel:  关键信息级别日志
+    WarnLevel:  警告级别日志
+    ErrorLevel: 错误级别日志
+    FatalLevel: 记录日志，程序 exit
+    PanicLevel: 记录日志，panic

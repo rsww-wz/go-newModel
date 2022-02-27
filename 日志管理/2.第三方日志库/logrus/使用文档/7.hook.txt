@@ -1,0 +1,13 @@
+Hook机制
+    logrus最令人心动的功能就是其可扩展的HOOK机制了
+    通过在初始化时为logrus添加hook，logrus可以实现各种扩展功能
+
+
+Hook接口
+    logrus的hook接口定义如下
+    其原理是每次写入日志时拦截，修改logrus.Entry
+
+
+Hook使用
+    hook的使用也很简单，在初始化前调用log.AddHook(hook)添加相应的hook即可
+    logrus官方仅仅内置了syslog的hook

@@ -1,0 +1,44 @@
+版本
+    在go中使用protobuf，有两个可选用的包goprotobuf（go官方出品）和gogoprotobuf
+    gogoprotobuf完全兼容google protobuf，它生成的代码质量和编解码性能均比goprotobuf高一些
+
+
+插件
+    Protobuf 源码中默认实现了对 C++, Java, C#, Python 等语言的生成器插件，但是没有 Go 语言的生成器插件
+    Go 语言的生成器插件是在另一个叫 golang/protobuf 的项目中提供的，也叫 goprotobuf
+
+
+安装protoc
+    首先去https://github.com/google/pro... 上下载protobuf的编译器protoc
+    windows上可以直接下到exe文件(linux则需要编译)
+    最后将下载好的可执行文件拷贝到GOPATH的bin目录下(GOPATH/bin目录最好添加到系统环境变量里)
+
+
+goprotobuf
+    安装插件
+        go get github.com/golang/protobuf/protoc-gen-go
+
+    安装protobuf库文件
+        go get github.com/golang/protobuf/proto
+
+    生成go文件
+        protoc --go_out=. *.proto
+
+
+
+
+gogoprotobuf
+    安装插件(gogoprotobuf有两个插件可以使用)
+        protoc-gen-gogo：和protoc-gen-go生成的文件差不多，性能也几乎一样(稍微快一点点)
+        protoc-gen-gofast：生成的文件更复杂，性能也更高(快5-7倍)
+
+    安装gogoprotobuf库文件
+        go get github.com/gogo/protobuf/proto
+        go get github.com/gogo/protobuf/gogoproto  //这个不装也没关系
+
+    生成go文件
+        //gogo
+        protoc --gogo_out=. *.proto
+
+        //gofast
+        protoc --gofast_out=. *.proto

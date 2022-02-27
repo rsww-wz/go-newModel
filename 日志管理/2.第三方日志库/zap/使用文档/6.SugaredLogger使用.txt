@@ -1,0 +1,70 @@
+默认类型
+    默认的zap记录器需要结构化标签，需要使用特定值类型的函数
+    例如(就是Logger类型):
+    log.Info("this is info message with fields",
+        zap.Int("age",24),
+        zap.String("gender","man"))
+
+    虽然会先的很长，但是对性能要求较高的话，这是最快的选择
+
+
+
+Sugared Logger
+    Sugared Logger类型,它基于printf分割的反射类型检测
+    提供更简单的语法来添加混合类型的标签
+
+
+    大部分的实现基本都相同
+    唯一的区别是，我们通过调用主logger的.Sugar() 方法来获取一个SugaredLogger
+    然后使用SugaredLogger以printf格式记录语句
+
+
+创建类型SugaredLogger
+    func (log *Logger) Sugar() *SugaredLogger
+    需要先创建Logger类，然后调用Sugar()方法
+
+
+类型转换
+    也就是从SugaredLogger 转换到 Logger类型
+    如果需要，可以随时使用记录器上的.Desugar()方法从sugar logger切换到标准记录器
+
+    func (s *SugaredLogger) Desugar() *Logger
+
+
+Sugared提供的API
+    普通类
+        func (s *SugaredLogger) Debug  (args ...interface{})
+        func (s *SugaredLogger) Info   (args ...interface{})
+        func (s *SugaredLogger) Warn   (args ...interface{})
+        func (s *SugaredLogger) Error  (args ...interface{})
+        func (s *SugaredLogger) DPanic (args ...interface{})
+        func (s *SugaredLogger) Panic  (args ...interface{})
+        func (s *SugaredLogger) Fatal  (args ...interface{})
+
+
+    格式化类
+        func (s *SugaredLogger) Debugf  (template string, args ...interface{})
+        func (s *SugaredLogger) Infof   (template string, args ...interface{})
+        func (s *SugaredLogger) Warnf   (template string, args ...interface{})
+        func (s *SugaredLogger) Errorf  (template string, args ...interface{})
+        func (s *SugaredLogger) DPanicf (template string, args ...interface{})
+        func (s *SugaredLogger) Panicf  (template string, args ...interface{})
+        func (s *SugaredLogger) Fatalf  (template string, args ...interface{})
+
+
+    任意类
+        func (s *SugaredLogger) Debugw  (msg string, keysAndValues ...interface{})
+        func (s *SugaredLogger) Infow   (msg string, keysAndValues ...interface{})
+        func (s *SugaredLogger) Warnw   (msg string, keysAndValues ...interface{})
+        func (s *SugaredLogger) Errorw  (msg string, keysAndValues ...interface{})
+        func (s *SugaredLogger) DPanicw (msg string, keysAndValues ...interface{})
+        func (s *SugaredLogger) Panicw  (msg string, keysAndValues ...interface{})
+        func (s *SugaredLogger) Fatalw  (msg string, keysAndValues ...interface{})
+
+
+总结
+    普通类     能记录任何类型的的值
+    格式化类   格式化日志信息
+    任意类     和Logger类型的键值对一样，但是性能比较低
+                也是指定一个key，只能是字符串，后面跟的是value，可以是任意类型
+                在日志中输出的时候，以键值对的形式显示

@@ -1,0 +1,40 @@
+写入文件
+    使用zap.New()方法来手动传递所有配置
+    而不是使用像zap.NewProduction()这样的预置方法来创建logger
+
+
+配置
+    zapcore.Core需要三个配置 -- Encoder,WriteSyncer,LogLevel
+
+    Encoder
+        编码器(如何写入日志)
+        我们将使用开箱即用的NewConsoleEncoder()
+        并使用预先设置的ProductionEncoderConfig()
+
+    writeSyncer
+        指定日志将写到那里去
+        我们使用zapcore.AddSync()函数
+        并且将打开的文件句柄传进去
+
+    LogLevel:
+        哪种级别的日志将被写入
+
+
+
+流程
+    1.先设置编码器
+        NewConsoleEncoder()是预设的编码器，它是一个结构体
+        如果有需要修改的配置，单独修改里面的字段即可
+
+    2.指定日志写入的位置
+        func AddSync(w io.Writer) WriteSyncer
+        把文件指针丢进去即可
+
+
+    3.用以上配置，创建日志对象
+        func NewCore(enc Encoder, ws WriteSyncer, enab LevelEnabler) Core
+        参数分别是：编码器，写入位置，日志级别
+        得到整合配置的Core对象
+
+        func New(core zapcore.Core, options ...Option) *Logger
+        再把Core对象丢进new函数即可得到自定义的logger对象

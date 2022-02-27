@@ -1,0 +1,6 @@
+解析成HTML树
+    func Parse(r io.Reader) (*html.Node, error)
+        作用：把HTML文本解析成HTML树
+        参数：存放文本的io.Reader
+        返回值：结点结构的指针
+

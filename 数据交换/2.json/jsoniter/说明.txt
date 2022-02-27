@@ -1,0 +1,26 @@
+标准库提供的json包虽然功能强大
+但是性能却不是很好
+
+因此go语言中有人开发出了更好的第三方解析json的库
+其中最出名的就是 : jsoniter
+
+
+jsoniter
+    Jsoniter 有三个不同的 api 用于不同的场合
+        iterator-api：用于处理超大的输入
+        bind-api：日常最经常使用的对象绑定
+        any-api：lazy 解析大对象，具有 PHP Array 一般的使用体验
+        一句话总结就是简单快捷方便，性能OK！并且完美兼容：encoding/json
+
+    Jsoniter 的 Golang 版本可以比标准库（encoding/json）快 6 倍之多
+
+
+补充说明
+    需要定义schema来描述数据是一件很麻烦的事情
+    Jsoniter 允许你把 json 解析为 Any 对象，然后就可以直接使用了
+    使用体验和 PHP 的 json_decode 差不多
+    在Jsoniter中lazy解析并不代表慢，在大文件的解析实例中，凸显无疑
+
+
+使用
+    引入 : jsoniter: go get github.com/json-iterator/go

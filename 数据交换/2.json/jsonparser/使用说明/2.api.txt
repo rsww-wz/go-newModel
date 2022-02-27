@@ -1,0 +1,30 @@
+获取类型
+    func Get(data []byte, keys ...string) (value []byte, dataType ValueType, offset int, err error)
+
+
+获取值
+    func GetUnsafeString(data []byte, keys ...string) (val string, err error)
+
+    func GetString(data []byte, keys ...string) (val string, err error)
+    func GetFloat(data []byte, keys ...string) (val float64, err error)
+    func GetInt(data []byte, keys ...string) (val int64, err error)
+    func GetBoolean(data []byte, keys ...string) (val bool, err error)
+
+
+解析值
+    func ParseBoolean(b []byte) (bool, error)
+    func ParseString(b []byte) (string, error)
+    func ParseFloat(b []byte) (float64, error)
+    func ParseInt(b []byte) (int64, error)
+
+
+修改
+    func Set(data []byte, setValue []byte, keys ...string) (value []byte, err error)
+
+删除
+    func Delete(data []byte, keys ...string) []byte
+
+
+其他
+    func ObjectEach(data []byte, callback func(key []byte, value []byte, dataType ValueType, offset int) error, keys ...string) (err error)
+    func ArrayEach(data []byte, cb func(value []byte, dataType ValueType, offset int, err error), keys ...string) (offset int, err error)

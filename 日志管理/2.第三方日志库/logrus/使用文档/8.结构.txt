@@ -1,0 +1,29 @@
+兼容标准库的接口
+type StdLogger interface {
+	Print(...interface{})
+	Printf(string, ...interface{})
+	Println(...interface{})
+
+	Fatal(...interface{})
+	Fatalf(string, ...interface{})
+	Fatalln(...interface{})
+
+	Panic(...interface{})
+	Panicf(string, ...interface{})
+	Panicln(...interface{})
+}
+
+
+type Fields map[string]interface{}
+
+type Entry struct {
+    Logger *Logger
+    Data Fields
+    Time time.Time
+    Level Level
+    Caller *runtime.Frame
+    Message string
+    Buffer *bytes.Buffer
+    Context context.Context
+    err string
+}

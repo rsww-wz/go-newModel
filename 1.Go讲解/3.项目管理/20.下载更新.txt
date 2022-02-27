@@ -1,0 +1,46 @@
+下载模块/包
+    1.自动下载
+        Go 命令行工具会自动处理 go.mod 中指定的模块版本
+        当源代码中 import 指向的模块不存在于 go.mod 文件中时
+        Go 命令行工具会自动搜索这个模块
+        如果搜索到就添加进require中
+        如果没有搜索到，就下载最新版(最后一个 tag 且非预发布的稳定版本)并更新go.mod文件
+
+
+    2.go get 手动下载
+        有非常多的细节，单独讲解
+        而且非常强大
+
+
+
+go get命令
+    下载依赖项 -- 可以完成更新和降级
+
+     (以golang.org/x/text为例)
+        拉取最新的版本(优先择取 tag)
+        go get golang.org/x/text@latest
+
+        指定版本拉取，拉取v3版本
+        go get github.com/smartwalle/alipay/v3
+
+        拉取 tag 为 v0.3.2 的 commit
+        go get golang.org/x/text@v0.3.2
+
+        拉取 master(other) 分支的最新 commit
+        go get golang.org/x/text@master(other)
+
+        拉取 hash 为 342b231 的 commit，最终会被转换为 v0.3.2：
+        go get golang.org/x/text@342b2e
+
+
+    更新依赖项
+        go get -u               将会升级到最新的次要版本或者修订版本(x.y.z, z是修订版本号， y是次要版本号)
+        go get -u = patch path  升级到最新的修订版本(只改bug的版本)
+        go get package@version  升级到指定的版本号version 如果下载所有依赖可以使用go mod download命令
+
+
+    更新到最新版本
+        go get github.com/gogf/gf@version
+        如果没有指明 version 的情况下，则默认先下载打了 tag 的 release 版本,  比如 v0.4.5 或者 v1.2.3
+        如果没有 release 版本，则下载最新的 pre release 版本，比如 v0.0.1-pre1
+        如果还没有则下载最新的 commit

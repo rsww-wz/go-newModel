@@ -1,0 +1,59 @@
+GOPROXY 环境变量
+    Go 1.11 版本在引入 go module 的同时，还引入了 Go module proxy
+    go get 命令默认情况下
+    无论是在 gopath mode 还是 module-aware mode 下
+    都是直接从代码托管服务器下载 go module 的 (github、gitlab 等)
+
+
+    但是 Go 1.11 中，我们可以通过设置 GOPROXY 环境变量
+    让 Go get 命令从其他代理服务器下载 module
+     例如：export GOPROXY=https://goproxy.cn
+
+
+    一旦如上面设置生效，后续 go 命令就会通过 go module 下载协议与 module 代理交互下载特定版本的 module
+    有了 module proxy，之前的那些包无法 go get 成功 (比如：golang.org/x 下面的包)
+    或者获取缓慢 (比如：github 有时访问很慢) 的问题就都得到了解决
+    同时，module proxy 也让 gopher 在 module 和包的获取行为上增加了一层控制和干预能力
+
+
+
+GOPROXY发展
+    Go 1.13 版本之前，GOPROXY 这个环境环境变量的默认值为空
+    Go 工具链都是直接与类似 github.com 这样的代码托管站点通信并获取相关依赖包的数据的
+    一些第三方 module 代理服务发布后，迁移到 go module 的 gopher 们发现
+    大多数情况下通过 proxy 获取依赖包数据的速度要远高于直接从代码托管站点获取
+    因此，GOPROXY 总是会配置上一个值
+
+    Go 核心团队也希望 Go 世界能有一个像 node.js 那样的中心化的 module 仓库为大家提供服务
+    于是在 Go 1.13 中将 https://proxy.golang.org 作为 GOPROXY 环境变量的默认值之一
+    这也是 Go 提供的官方 module 代理服务
+
+    同时从 Go 1.13 版本开始
+    GOPROXY 环境变量支持设置为多个 proxy 的列表 (多个 proxy 之间采用逗号分隔)
+    Go 编译器会按顺序尝试从列表中的 proxy 服务获取依赖包数据
+    当有 proxy 服务不可达或者是返回的 http 状态码不是 404 也不是 410 时
+    go 会终止数据获取，否则会尝试向列表中的下一个 proxy 服务获取数据
+
+    Go 1.13 中，GOPROXY 的默认值为 https://proxy.golang.org,direct
+    当官方代理返回 404 或 410 时，Go 编译器会尝试直接连接依赖 module 的代码托管站点以获取数据
+
+
+下面是目前世界各地运行的一些知名 module 代理服务：
+    proxy.golang.org            - Go 官方提供的 module 代理服务
+    gocenter.io                 - JFrog Artifactory 公司提供的 module 代理服务
+    mirrors.tencent.com/go      - 腾讯公司提供的 module 代理服务
+    mirrors.aliyun.com/goproxy  - 阿里云提供的 module 代理服务
+    goproxy.cn                  - 开源 module 代理，由七牛云提供主机运行，是目前中国大陆地区最为稳定的 module 代理服务
+    goproxy.io                  - 开源 module 代理，有中国 go 社区提供的 module 代理服务
+    Athens                      - 开源 module 代理，可基于该代理自行搭建 module 代理服务
+
+
+
+3.2 GOSUMDB
+我们知道 go 会在 go module 启用时在本地建立一个 go.sum 文件，用来存储依赖包特定版本的加密校验和。同时，Go 维护下载的软件包的缓存，并在下载时计算并记录每个软件包的加密校验和。在正常操作中，go 命令对照这些预先计算的校验和去检查某仓库下的 go.sum 文件，而不是在每次命令调用时都重新计算它们。
+
+在日常开发中，特定 module 版本的校验和永远不会改变。每次运行或构建时，go 命令都会通过本地的 go.sum 去检查其本地缓存副本的校验和是否一致。如果校验和不匹配，则 go 命令将报告安全错误，并拒绝运行构建或运行。
+
+在这种情况下，重要的是找出正确的校验和，确定是 go.sum 错误还是下载的代码是错误的。如果 go.sum 中尚未包含已下载的 module，并且该模块是公共 module，则 go 命令将查询 Go 校验和数据库以获取正确的校验和数据存入 go.sum。如果下载的代码与校验和不匹配，则 go 命令将报告不匹配并退出。
+
+Go 1.13 提供了 GOSUMDB 环境变量用于配置 Go 校验和数据库的服务地址（和公钥），其默认值为 "sum.golang.org"，这也是 Go 官方提供的校验和数据库服务 (大陆 gopher 可以使用 sum.golang.google.cn)。出于安全考虑，建议保持 GOSUMDB 开启。但如果因为某些因素无法访问 GOSUMDB 时（包括 sum.golang.google.cn），可以通过下面命令将其关闭

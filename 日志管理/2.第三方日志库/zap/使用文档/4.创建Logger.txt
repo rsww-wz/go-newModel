@@ -1,0 +1,43 @@
+Logger介绍
+    创建一个Logger
+        zap.NewProduction()
+        zap.NewDevelopment()
+        zap.NewExample()
+
+    上面的每一个函数都将创建一个Logger
+    唯一的区别在于它将记录的信息不同
+        例如：production logger默认记录调用函数信息、日期和时间等
+
+    通过Logger 调用INFO、ERROR等
+
+
+创建Logger
+    NewExample()
+        func NewExample(options ...Option) *Logger
+
+    NewProduction()
+        func NewProduction(options ...Option) (*Logger, error)
+
+    NewDevelopment()
+        func NewDevelopment(options ...Option) (*Logger, error)
+
+
+
+总结
+    Example 和 Production 使用的是json 格式输出
+    development使用行形式输出
+
+    Development
+        从警告级别向上打印到堆栈中来跟踪
+        始终打印包/文件/行(方法)
+        在行尾添加任何额外字段作为json字符串
+        以大写形式打印级别名称
+        以毫秒为单位打印ISO8601格式的时间戳
+
+
+    Production
+        调试级别消息不记录
+        Error,Dpanic级别的记录，会在堆栈中跟踪文件，warn不会
+        始终将调用者添加到文件中
+        以时间戳格式打印日期
+        以小写形式打印级别名称

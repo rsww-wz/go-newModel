@@ -1,0 +1,84 @@
+godep后期发展
+    在官方推出vendor机制后
+    godep 和 vendor 结合使用
+    从而标准化了依赖第三方库的存放位置
+    不在需要_workspace，也不需要对 GOPATH 环境变量进行 “偷梁换柱”了
+    Go 编译器将原生优先感知和使用 vendor 目录下缓存的第三方包版本
+
+    不过即便有了 vendor 的支持，vendor 内第三方依赖包的代码的管理依旧是不规范的
+    要么是手动的，要么是借助 godep 这样的第三方包管理工具
+    不过，如果不借助任何工具，vendor 机制，也只能通过手动更新了
+
+
+dep
+    2017年，官方正式发布 dep 工具
+
+    注意，dep 不是 godep
+
+    dep   是官方版本
+    godep 是第三方工具
+
+    但是go dep 和 godep 的作者都是同一个人
+
+
+
+dep思路
+    利用包依赖分析引擎 gps 分析当前项目代码中的包依赖关系
+
+    将分析出的项目包的直接依赖和约束写入项目根目录下的 Gopkg.toml 文件中
+
+    将项目依赖的所有第三方包（包括直接依赖和间接依赖 / 传递依赖）
+        在满足 Gopkg.toml 中约束范围内的最新版本信息写入 Gopkg.lock 文件中
+
+    以 Gopkg.lock 为输入，将其中的包 (精确到某次 commit 版本) 下载到项目根目录下的 vendor 路径下面
+
+    但是 dep 也不能很好解决类似 “钻石依赖” 的问题
+    例如
+        foo包依赖a和b两个包
+        而a、b两个包分别依赖包f的不同版本
+        在这种情况下，由于a依赖f包的 v1.1.0 版本
+                    b包依赖f包的 v2.0.0 版本
+                    两个约束之间没有交集，无法调和
+                    dep 将会因无法解决这个依赖冲突而报错
+
+
+dep工作原理
+    在项目的根目录下，执行 godep init命令，会生成下面的两个文件和vendor目录
+        Gopkg.toml 简单讲是依赖库的清单文件
+        Gopkg.toml 是依赖管理的核心文件，可以生成也可以手动修改
+
+        Gopkg.lock 是校验描述文件
+        Gopkg.lock 是生成的文件，不要手工修改
+
+        vendor
+
+    Gopkg.toml 和 Gopkg.lock
+        一般情况下Gopkg.toml 里面只定义直接依赖项
+        而Gopkg.lock 里面除了包含Gopkg.toml 中的所有项之外，还包含传递依赖项
+
+        比如：某个项目依赖项目A， 而项目A又依赖B、C
+            那么Gopkg.toml 中只会包含项目A
+            而Gopkg.lock 中会包含项目A、B、C
+
+        所以Gopkg.lock 定义了所有依赖的项目的详细信息（commit ID和packages）
+        使得每次build 我们自己的项目时，始终基于确定不变的依赖项
+
+
+dep目录树
+    GOPATH
+        bin
+        pkg
+        src
+            github
+                xxx 1.1
+
+            project (项目)
+                src (项目源代码)
+                    main.go
+                    Gopkg.toml
+                    Gopkg.lock
+
+                vendor (依赖包源代码目录)
+                    src
+                        github
+                            xxx 1.2

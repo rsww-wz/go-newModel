@@ -1,0 +1,15 @@
+{"level":"warning","msg":"The group's number increased tremendously!","number":122,"omg":true,"time":"2022-01-16T21:00:45+08:00"}
+{"level":"fatal","msg":"The ice breaks!","number":100,"omg":true,"time":"2022-01-16T21:00:45+08:00"}
+{"level":"trace","msg":"trace 日志","time":"2022-01-16T21:14:54+08:00"}
+{"level":"debug","msg":"debug 日志","time":"2022-01-16T21:14:54+08:00"}
+{"level":"info","msg":"Info 日志","time":"2022-01-16T21:14:54+08:00"}
+{"level":"warning","msg":"warn 日志","time":"2022-01-16T21:14:54+08:00"}
+{"level":"error","msg":"error msg","time":"2022-01-16T21:14:54+08:00"}
+{"level":"fatal","msg":"fatal 日志","time":"2022-01-16T21:14:54+08:00"}
+{"level":"error","msg":"error msg","time":"2022-01-16T21:20:02+08:00"}
+{"level":"fatal","msg":"fatal 日志","time":"2022-01-16T21:20:02+08:00"}
+{"level":"error","msg":"error msg","time":"2022-01-16T22:37:39+08:00"}
+{"level":"fatal","msg":"fatal 日志","time":"2022-01-16T22:37:39+08:00"}
+{"level":"error","msg":"error msg","time":"2022-01-16T22:40:34+08:00"}
+{"level":"fatal","msg":"fatal 日志","time":"2022-01-16T22:40:34+08:00"}
+{"level":"warning","msg":"你现在是在控制台输出日志","stderr":"控制台","time":"2022-01-16T22:44:16+08:00"}

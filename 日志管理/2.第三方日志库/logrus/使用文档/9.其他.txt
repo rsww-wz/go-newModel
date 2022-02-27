@@ -1,0 +1,42 @@
+记录文件名和行号
+    logrus的一个很致命的问题就是没有提供文件名和行号
+    这在大型项目中通过日志定位问题时有诸多不便
+
+    网上给出的解决方案分位两类
+        一就是自己实现一个hook
+        二就是通过装饰器包装logrus.Entry
+
+    两种方案网上都有很多代码，但是大多无法正常工作
+    但总体来说，解决问题的思路都是对的
+        通过标准库的runtime模块获取运行时信息，并从中提取文件名，行号和调用函数名
+
+
+    标准库runtime模块的Caller(skip int)函数可以返回当前goroutine调用栈中的文件名，行号，函数信息等
+    参数skip表示表示返回的栈帧的层次，0表示runtime.Caller的调用着
+    返回值包括响应栈帧层次的pc(程序计数器)，文件名和行号信息
+    为了提高效率，我们先通过跟踪调用栈发现，从runtime.Caller()的调用者开始
+    到记录日志的生成代码之间，大概有8到11层左右
+    所有我们在hook中循环第8到11层调用栈应该可以找到日志记录的生产代码
+
+
+日志本地文件分割
+    logrus本身不带日志本地文件分割功能
+    但是我们可以通过file-rotatelogs进行日志本地文件分割 (另外一个库)
+    每次当我们写入日志的时候，logrus都会调用file-rotatelogs来判断日志是否要进行切分
+
+
+Fatal处理
+    和很多日志框架一样，logrus的Fatal系列函数会执行os.Exit(1)
+    但是logrus提供可以注册一个或多个fatal handler函数的接口logrus.RegisterExitHandler(handler func() {} )
+    让logrus在执行os.Exit(1)之前进行相应的处理
+    fatal handler可以在系统异常时调用一些资源释放api等，让应用正确的关闭
+
+
+线程安全
+    默认情况下，logrus的api都是线程安全的，其内部通过互斥锁来保护并发写
+    互斥锁工作于调用hooks或者写日志的时候，如果不需要锁，可以调用logger.SetNoLock()来关闭之
+    可以关闭logrus互斥锁的情形包括：
+        没有设置hook，或者所有的hook都是线程安全的实现
+        写日志到logger.Out已经是线程安全的了
+            如logger.Out已经被锁保护
+            或者写文件时，文件是以O_APPEND方式打开的，并且每次写操作都小于4k

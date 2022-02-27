@@ -1,0 +1,46 @@
+vendor实现
+    go语言的 vendor机制，需要在项目下建立vendor目录
+    若某个路径下边包含vendor文件夹，则在某处引用包时，会优先搜索vendor文件夹下的包
+    在Go 1.5开启该项特性需设置GO15VENDOREXPERIMENT=1
+    而从Go 1.6开始，该项特性默认开启
+
+
+使用vendor时，建议遵循如下两条规约
+    a) 当欲将某包vendor时，可能想将所有依赖包均vendor
+    b) 尽量将vendor依赖包结构扁平化，不要vendor套vendor
+
+
+vendor安装
+    govendor只是用来管理项目的依赖包
+    如果GOPATH中本身没有项目的依赖包
+    则需要通过go get先下载到GOPATH中
+    go get -u github.com/kardianos/govendor
+
+
+vendor语法
+    格式为 govendor COMMAND
+
+    init	         初始化 vendor 目录
+    list	         列出所有的依赖包
+    add	             添加包到 vendor 目录，如 govendor add + external 添加所有外部包
+    add PKG_PATH	 添加指定的依赖包到 vendor 目录
+    get	             类似go get 命令，拉取依赖包到 vendor 目录
+    update	         从 $GOPATH 更新依赖包到 vendor 目录
+    remove	         从 vendor 管理中删除依赖
+    status	         列出所有缺失、过期和修改过的包
+    fetch	         添加或更新包到本地 vendor 目录
+    sync	         本地存在 vendor.json 时候拉取依赖包，匹配所记录的版本
+    migrate	         从原有工具中移动包到带有元数据的vendor文件夹
+
+
+一些命令的缩写形式
+      状态         缩写                              含义
+    +local          l                       本地包，级项目自身的包组织
+    +external       e                       外部包，即被GOPATH管理，但不在vendor目录下
+    +vendor         v                       已被vendor立管，即在vendor目录下
+    +std            s                       标准库中的包
+    +unused         u                       未使用的包，即包在vendor目录下，但项目并没有用到
+    +missing        m                       代码引用了依赖包，但该包并没有找到
+    +program        p                       主程序包，意味着可以编译为执行文件
+    +outside                                外部包和缺失的包
+    +all                                    所以的包

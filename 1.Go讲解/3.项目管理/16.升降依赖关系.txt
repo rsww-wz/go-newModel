@@ -1,0 +1,57 @@
+升降级依赖关系
+    如果对 go mod init 初始选择的依赖包版本不甚满意
+    或是第三方依赖包有更新的版本发布
+    我们日常开发工作中都会对依赖包的版本进行 “升降级”(upgrade 或 downgrade) 的操作
+
+    在 “module-aware mode” 下
+    由于 go.mod 和 go.sum 都是由 go 工具链维护和管理的
+    这里不建议手工去修改 go.mod 中 require 中包的版本号
+    我们可以通过 go get 命令来实现我们的目的
+
+
+降级
+    我们可以先用 go list 命令查看一下某 module 都有哪些版本可用
+    以 golang.org/x/text 为例
+        执行 : go list -m -versions golang.org/x/text
+        返回 : golang.org/x/text v0.1.0 v0.2.0 v0.3.0 v0.3.1 v0.3.2 v0.3.3
+
+        现在 golang.org/x/text 从 v0.3.0 降级到 v0.1.0
+        执行 : go get golang.org/x/text@v0.1.0
+        返回
+            go: finding golang.org/x/text v0.1.0
+            go: downloading golang.org/x/text v0.1.0
+
+        此时，go.mod 中依赖的 golang.org/x/text 已经从 v0.3.0 自动变成了 v0.1.0 了
+        go.sum 中也增加了 golang.org/x/text v0.1.0 的条目
+        不过 v0.3.0 的条目依旧存在，我们可以通过 go mod tidy 清理一下
+
+
+更到最新版
+    在 “module-aware mode” 下
+    go get -u 会将当前 module 的所有依赖的包版本 (无论直接依赖还是间接依赖) 都升级到最新的兼容版本
+    例如
+        将golang.org/x/text 从 v0.1.0 升级到最新版 v0.3.3
+        执行 : go get -u golang.org/x/text
+
+        注意 : 更新仅会变更 minor 号和 patch 号
+
+
+更改版本号
+    如果仅仅要升级 patch 号
+    而不升级 minor 号，可以使用 go get -u=patch A
+    比如
+        如果 golang.org/x/text 有 v0.1.1 版本
+        那么 go get -u = patch golang.org/x/text
+        会将 go.mod 中的 text 后面的版本号变为 v0.1.1，而不是 v0.3.3
+
+
+
+go get 在 go module 下的参数
+    处于 module 工作模式下的 go get 更新某个依赖 (无论是升版本还是降版本) 时
+    会自动计算并更新其间接依赖的包的版本
+    下面是 go get 的其他一些常见命令行选项或参数的含义
+
+        -t      包括测试代码所依赖的 module
+        -d      下载每个 module 的源代码，但不要构建或安装它们
+        -v      提供详细输出
+        ./…     在整个源代码树中执行这些操作，并且仅更新所需的依赖项 (不包括测试代码)

@@ -1,0 +1,14 @@
+加载文档
+    func LoadURL(url string) (*html.Node, error)
+        作用：从指定的URL加载HTML文档
+        返回值：*html.Node类型，是一个结构体,是一个解析好的HTML文档
+
+
+    func LoadDoc(path string) (*html.Node, error)
+        作用：从指定的文件路径加载HTML文档
+
+
+    func Parse(r io.Reader) (*html.Node, error)
+        作用：从指定Reader加载HTML文档
+
+

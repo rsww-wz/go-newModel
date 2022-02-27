@@ -1,0 +1,30 @@
+go test
+    go test命令是一个按照一定约定和组织的测试代码的驱动程序
+    在包目录内，所有以_test.go为后缀的源代码文件都是go test测试的一部分
+    不会被go build编译到最终的可执行文件中
+
+
+在*_test.go文件中有三种类型的函数
+    测试函数         函数名前缀为Test           测试程序的一些逻辑行为是否正确
+    基准函数         函数名前面为Benchmark      测试函数的性能
+    实例函数         函数名前缀为Example        为文档提供实例文档
+
+
+go test命令会遍历所有的*_test.go文件中复合上述命名规则的函数
+然后生成一个临时main包用于调用相应的测试函数
+然后构建并运行，报告测试结果
+最后清理测试中生成的临时文件
+
+
+go测试规矩
+    导入需要的包	        import testing
+    执行命令	            go test file_test.go
+    测试文件命名	        必须以_test.go结尾
+    功能测试的用例函数	    必须以Test开头 且 后头跟着的函数名不能以小写字母开头，比如：Testabc 就是不行的，TestAbc就是ok的
+    功能测试参数	        testing.T
+    压力测试用例函数	    必须以Benchmark开头 且 后头跟着的函数名不能以小写字母开头，比如：Benchmarkabc 就是不行的，BenchmarkAbc就是ok的
+    压力测试参数	        testing.B
+    测试信息	            Log方法，默认情况下是不会显示的，只有在go test -v的时候显示
+    测试控制	            通过Error/Errorf/FailNow/Fatal等来进行测试是否是失败，或者在失败的情况下的控制
+    压力测试命令	        go test -test.bench file_test.go
+    压力测试的循环体	    使用test.B.N

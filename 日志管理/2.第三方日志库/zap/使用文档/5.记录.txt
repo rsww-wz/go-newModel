@@ -1,0 +1,59 @@
+日志记录器方法的语法是这样的：
+    func (log *Logger) MethodXXX(msg string,fields ...Field)
+    其中MethodXXX是一个可变参数函数
+    可以是Info/Error/Debug/Panic等
+
+    每个方法都接受一个消息字符串和任意数量的zapcore.Field长参数
+    每个zapcore.Field其实就是一组键值对参数
+
+
+具体API
+    func (log *Logger) Debug  (msg string, fields ...Field)
+    func (log *Logger) Info   (msg string, fields ...Field)
+    func (log *Logger) Warn   (msg string, fields ...Field)
+    func (log *Logger) Error  (msg string, fields ...Field)
+    func (log *Logger) DPanic (msg string, fields ...Field)
+    func (log *Logger) panic  (msg string, fields ...Field)
+    func (log *Logger) Fatal  (msg string, fields ...Field)
+
+
+Field类型
+    type Field = zapcore.Field
+
+    type Field struct {
+    	Key       string
+    	Type      FieldType
+    	Integer   int64
+    	String    string
+    	Interface interface{}
+    }
+
+    直接使用Field字段记录信息，几乎是不可能，因为里面有比较多的字段
+    如果每个字段都定义的话，效率很低
+    所以有另外的函数来实现，返回的就是Field结构
+
+
+Field字段API
+    func Type (key string, val int64) Field
+
+    这里的Type只是一个统称
+    库里面已经写好了所有类型的函数
+    要记录信息的话，先判断要添加信息的类型
+    然后调用相应的函数即可
+    函数的参数是一对键值对
+
+    里面还有一些常用的类型函数，比如时间类型等
+    里面所有的函数都在zap包里面
+    调用的时候，需要zap.Type()
+
+    其中有一个any函数，它的value空接口
+    func Any(key string, value interface{}) Field
+
+    函数里面用了断言
+    会判断value的类型，然后调用相应类型的函数，存入Field结构中
+    当不确定类型的时候，可以调用此函数
+
+
+由于里面的类型都是确定的，所以速度会比较快
+不需要大量用到反射
+但是any函数用了断言，如果没有必要，尽量不要使用此函数

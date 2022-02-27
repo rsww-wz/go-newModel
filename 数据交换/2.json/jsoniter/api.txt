@@ -1,0 +1,121 @@
+序列化
+	func Marshal(v interface{}) ([]byte, error)
+        作用：序列化成一个整个长字符切片
+        参数：结构体，map
+        返回值：序列化后的字符切片，错误
+
+
+	func MarshalIndent(v interface{}, prefix, indent string) ([]byte, error)
+	    作用：格式化序列化后的字符串
+	    参数
+	        v        要序列化的元素
+	        prefix   每行的前缀
+	        indent   为标签嵌套时使用的空位符，只能是空格，不可以是转移字符
+
+
+	func MarshalToString(v interface{}) (string, error)
+	    作用：序列化成一个长字符串
+	    返回值：字符串，错误
+
+
+
+反序列化
+    func Unmarshal(data []byte, v interface{}) error
+        作用：反序列化成结构体或者map
+        参数：json字节切片，地址
+        返回值：错误
+
+	func UnmarshalFromString(str string, v interface{}) error
+	    作用：反序列化一个json字符串
+	    参数：json字符串，接收器
+	    返回值：错误
+
+
+解码
+    type Decoder struct {
+    	iter *Iterator
+    }
+
+    func NewEncoder(writer io.Writer) *Encoder
+    func (adapter *Decoder) Decode(obj interface{}) error
+    func (adapter *Decoder) More() bool
+    func (adapter *Decoder) Buffered() io.Reader
+    func (adapter *Decoder) UseNumber()
+    func (adapter *Decoder) DisallowUnknownFields()
+
+
+编码
+    type Encoder struct {
+    	stream *Stream
+    }
+
+    func NewEncoder(writer io.Writer) *Encoder
+    func (adapter *Encoder) Encode(val interface{}) error
+    func (adapter *Encoder) SetIndent(prefix, indent string)
+    func (adapter *Encoder) SetEscapeHTML(escapeHTML bool)
+
+
+获取属性值
+	func Get(data []byte, path ...interface{}) Any
+	    作用：获取json中的属性值
+	    参数：json字节切片，属性
+	    返回值：any接口
+
+        any接口比较常用的函数
+            ToString          转换成字符串
+            Size              获取字段总数
+            Get               获取字段值
+            Keys() []string   获取字段切片
+
+            GetInterface      转换成map类型
+
+
+type Any interface {
+	LastError() error
+	ValueType() ValueType
+	MustBeValid() Any
+	ToBool() bool
+	ToInt() int
+	ToInt32() int32
+	ToInt64() int64
+	ToUint() uint
+	ToUint32() uint32
+	ToUint64() uint64
+	ToFloat32() float32
+	ToFloat64() float64
+	ToString() string
+	ToVal(val interface{})
+	Get(path ...interface{}) Any
+	Size() int
+	Keys() []string
+	GetInterface() interface{}
+	WriteTo(stream *Stream)
+}
+
+
+
+配置
+    里面有一个变量：ConfigCompatibleWithStandardLibrary
+    这个变量会尽可能兼容标准库行为
+    这个变量结构体，里面有一些配置，最终还调用了结构体的一个方法
+    这个方法返回一个API接口
+    所以这个变量的作用是配置，然后返回一个接口，这个接口里面是这个库的全局函数
+    所以如果要用这个库的话，一般是先用这个变量，然后调用它返回的接口
+        序列化，反序列化，编码，解码等函数都在这里
+
+type API interface {
+	IteratorPool
+	StreamPool
+	MarshalToString(v interface{}) (string, error)
+	Marshal(v interface{}) ([]byte, error)
+	MarshalIndent(v interface{}, prefix, indent string) ([]byte, error)
+	UnmarshalFromString(str string, v interface{}) error
+	Unmarshal(data []byte, v interface{}) error
+	Get(data []byte, path ...interface{}) Any
+	NewEncoder(writer io.Writer) *Encoder
+	NewDecoder(reader io.Reader) *Decoder
+	Valid(data []byte) bool
+	RegisterExtension(extension Extension)
+	DecoderOf(typ reflect2.Type) ValDecoder
+	EncoderOf(typ reflect2.Type) ValEncoder
+}

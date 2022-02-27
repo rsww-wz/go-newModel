@@ -1,0 +1,41 @@
+godep 和 go dep
+    虽然godep前期比较麻烦，不兼容原生编译指令，需要_workspace这样的临时GOPATH目录
+    但是在官方加入vendor机制后，上面的问题都不存在
+    这时的godep 拥有vendor的优势，还有自身管理依赖的能力
+
+    但是go语言官方退出了dep工具，不需要担心维护和稳定性问题
+    而godep毕竟是第三方工具
+    所以学习官方的dep工具即可
+
+    官方 dep 支持版本最好在1.9以上
+
+
+dep安装
+    下载源码并安装：go get -u github.com/golang/dep/cmd/dep
+    二进制文件安装：curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+    安装位置     ：GOPATH/bin/dep.exe
+    Windows安装方法
+        1.下载release版本。打开页面https://github.com/golang/dep/releases，下载最新的dep-windows-amd64.exe
+        2.将dep-windows-amd64.exe放入GOPATH/bin下，修改名称为dep
+
+
+项目初始化
+    创建项目文件，执行dep init，会生成Gopkg.toml、Gopkg.lock文件和一个vendor目录
+        Gopkg.toml
+        Gopkg.lock
+        vendor
+
+
+dep在项目中的使用
+    按照惯性思维，我们要用一个依赖包首先肯定要安装它
+    而dep是一个比较聪明的管理工具，它会自动检测你go文件中import了哪些包文件，在比对本地的清单，当没有时会自动下载
+    所以日常使用的时候只需要下面两步
+
+    1.手动import所依赖的包文件
+    2.执行同步命令
+
+    tips
+        dep ensure命令是个万金油
+        我们日常开发90%都在用这个命令
+        当你从代码仓库中clone下来代码后别忘了执行一下dep ensure命令
+

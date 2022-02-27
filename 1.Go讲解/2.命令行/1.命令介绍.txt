@@ -1,0 +1,66 @@
+运行命令
+    go 命令 参数
+
+    如果有不懂的命令，查看用help查看
+    go help 命令
+    会有详细的介绍，每个参数是什么，但是都是英语的
+
+    有官方文档介绍
+        官方(被墙)：https://golang.org/cmd/go/
+        国内(英语)：http://docscn.studygolang.com/doc/cmd
+
+
+简单介绍常用命令
+    bug
+        提交bug
+
+    build
+        编译源代码
+
+    run
+        编译并执行源代码
+
+    clean
+        移除目标文件和缓存文件
+
+    env
+        配置环境信息
+
+    fmt
+        格式化代码
+
+    get
+        使用代码管理工具，拉取，编译，安装远程包
+        代码管理工具用于下载代码，然后使用go install 命令编译和安装包
+
+    install
+        在go build的基础上，再安装包
+        安装的意思就是把可执行性文件放置到特定目录再配置环境变量
+        所以就是先编译后，再把二进制文件移动到特定目录
+
+    mod
+        包管理工具
+
+    version
+        查看SDK版本
+
+
+
+命令
+    bug         start a bug report
+    build       compile packages and dependencies
+    clean       remove object files and cached files
+    doc         show documentation for package or symbol
+    env         print Go environment information
+    fix         update packages to use new APIs
+    fmt         gofmt (reformat) package sources
+    generate    generate Go files by processing source
+    get         add dependencies to current module and install them
+    install     compile and install packages and dependencies
+    list        list packages or modules
+    mod         module maintenance
+    run         compile and run Go program
+    test        test packages
+    tool        run specified go tool
+    version     print Go version
+    vet         report likely mistakes in packages

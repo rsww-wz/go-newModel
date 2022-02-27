@@ -1,0 +1,45 @@
+获取私有 module
+    有了 GOPROXY 配置的公共 module 代理服务后
+    公共 module 数据的获取变得十分容易和高效
+
+    但是如果依赖的是企业内部代码服务器上的 go module
+    或公共代码托管站点上的私有库 (private repository)
+    通过配置了公共 module 代理服务获取显然不会达到预期效果
+
+
+理解
+    就是你要依赖的包是自己写的，或者是公司内部开发的包
+    你把代码上传到github的私有库，别人是看不到，只有自己有权限
+    这些称为私有库，显示是不可能在通过配置的PROXY下载到的
+
+
+解决方法
+    让 go get 绕过 GOPROXY
+    Go 1.13 提供了 GOPRIVATE 环境变量用于指示哪些仓库下的 module 是私有的
+    不需要通过 GOPROXY下载，也不需要通过 GOSUMDB 去验证其校验和
+    不过要注意的是 GONOPROXY 和 GONOSUMDB 可以覆盖 GOPRIVATE 变量中的设置
+    因此设置时要谨慎吗，可以这样设置
+        GOPRIVATE = pkg.tonybai.com/private (私有仓库地址)
+        GONOPROXY = none
+        GONOSUMDB = none
+
+
+    GOPRIVATE 指示
+        pkg.tonybai.com/private 下的包无需经过 GOPROXY 代理下载
+        不经过 GOSUMDB 验证
+
+    GONOPROXY 和 GONOSUMDB 均为 none
+        意味着所有 module
+        不管是公共的还是私有的，都要经过 GOPROXY 下载
+        经过 GOSUMDB 验证
+
+        可以用 GOPRIVATE 单独设置，需要下载的私有库 go get 不使用 GOPROXY 下载他们 ，并且无需 GOSUMDB 校验
+
+
+    除了使用 ~/.netrc 实现配置访问 github.com 的凭证信息
+    我们也可以通过 ssh 方式访问 github 上的私有仓库
+    首先就是在 https://github.com/settings/keys 页面将你的主机公钥内容
+    (一般 ~/.ssh/id_rsa.pub) 添加到 github.com 的 SSH keys 中
+    然后在你的 ~/.gitconfig 中添加下面两行配置
+        [url "ssh://git@github.com/"]
+        insteadOf = https://github.com/

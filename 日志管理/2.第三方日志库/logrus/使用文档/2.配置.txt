@@ -1,0 +1,23 @@
+配置函数
+    func StandardLogger() *Logger
+        标准库log
+
+    func SetOutput(out io.Writer)
+        设置日志输出位置
+
+    func SetFormatter(formatter Formatter)
+        设置日志格式
+        一般设置为json
+
+    func SetReportCaller(include bool)
+        设置标准日志记录器是否包含该调用
+
+    func SetLevel(level Level)
+        设置日志级别
+        只有在该级别及之上的日志才会被记录
+
+    func GetLevel() Level
+        获取日志级别
+
+    func IsLevelEnabled(level Level) bool
+        检查标准日志记录器的日志级别是否大于level参数

@@ -1,0 +1,76 @@
+轴的作用
+    作用：定位，可以做到多种定位方式
+        文本定位
+        模糊定位
+        逻辑定位
+
+
+axes语法组成
+    路径
+        绝对路径：反斜杠开头，
+        相对路径：没有反斜杠开头
+
+        示例
+            绝对路径：/div/span/a
+            相对路径：div/span/a
+
+
+    谓语
+        和xpath语法的谓语一样
+        都是中括号里面的东西
+
+        常用函数 (谓语)
+            last()                      节点数组的最后一个
+            position()                  下标索引，从1开始
+            text()                      节点的文本内容
+            contains(@attr,'value')     模糊匹配
+            starts-with(@attr,'value')  是否以指定字符开头
+            count(@attr)                匹配次数
+            string-length()             回字符串的字符数,你应该用&lt;替代<,用&gt;代替>
+            normalize-space()           函数删除了前部和尾部的空格,并且把连续的空格串替换为一个单一的空格
+
+
+    轴 (定义相对于当前节点的节点集)
+        self                    选取当前节点
+        ancestor                选取当前节点的所有父辈
+        ancestor-or-self        选取当前节点的所有先辈以及当前节点本身
+        parent                  选取当前节点的父节点
+        child                   选取当前节点的所有子元素
+        descendant              选取当前节点的所有后代元素
+
+        following               选取文档中当前节点的结束标签之后的所有节点
+        namespace               选取当前节点的所有命名空间节点
+        preceding               选取文档中当前节点的开始标签之前的所有节点
+        preceding-sibling       选取当前节点之前的所有同级节点
+
+        attribute               选取当前节点的所有属性
+
+
+    步 (整合部分轴语法)
+        轴(axis)                      定义所选节点与当前节点之间的树关系
+        节点测试(node-test)            识别某个轴内部的节点
+        零个或者更多谓语(predicate)     更深入地提炼所选的节点集
+
+        步的语法：轴名称::节点测试[谓语]
+
+        示例
+            parent::div                 上层父节点，你那叫div的亲生爸爸，最多有一个
+            child::div                  下层所有子节点，你的所有亲儿子中叫div的
+            ancestor::div               上面所有直系节点，是你亲生爸爸或者你爷爷叫div的
+            descendant::div             下面所有节点，你的后代中叫div的，不包括你弟弟的后代
+
+            preceding::div              同层上节点，你所有的亲哥哥以及他们的后代中叫div的
+            preceding-sibling::div      同层上节点，你所有的亲哥哥中叫div的
+            following-sibling::div      同层下节点，你所有的亲弟弟中叫div的
+
+            following::div              自你以下页面中所有节点叫div的
+
+
+运算符
+    四则运算符：+，-，*，div
+    比较运算符：golang一样
+    其他运算符
+        or      或
+        and     与
+        mod     计算除法的余数
+        |       计算两个节点集

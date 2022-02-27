@@ -1,0 +1,31 @@
+记录有两种风格
+    结构化记录
+    全部记录
+
+    本包推荐的是结构化记录
+
+
+结构化记录有几个API，返回的都是*Entry
+常用的只有一个，WithFields
+注意
+    WithField，WithFields， WithTime
+    这三个函数，要在返回值上调用debug,print，info，warn，fatal或panic函数
+    要调用这些级别函数才会记录
+
+    func WithField(key string, value interface{}) *Entry
+        从标准日志记录器创建一个条目，并向它添加一个字段
+        如果需要多个字段，请使用' WithFields'
+
+    func WithFields(fields Fields) *Entry
+        从标准日志记录器创建一个条目，并向其添加多个字段
+        这只是' WithField '的助手，为每个字段调用它一次
+
+    func WithTime(t time.Time) *Entry
+        从标准日志记录器创建一个条目，并覆盖由它生成的日志的时间
+
+    func WithContext(ctx context.Context) *Entry
+        从标准日志记录器创建一个条目，并向其添加上下文
+
+    func WithError(err error) *Entry
+        使用ErrorKey中定义的值作为key
+        从标准记录器中创建一个条目，并向其添加一个错误

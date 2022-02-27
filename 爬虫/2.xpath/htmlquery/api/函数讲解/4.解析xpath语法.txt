@@ -1,0 +1,17 @@
+解析xpath语法
+    func Query(top *html.Node, expr string) (*html.Node, error)
+        搜索html，与指定的XPath expr匹配的节点
+        并返回匹配的html的第一个元素节点
+
+
+    func QueryAll(top *html.Node, expr string) ([]*html.Node, error)
+        搜索html，与指定的XPath expr匹配的节点
+        返回所有匹配到的结点
+
+
+    func Find(top *html.Node, expr string) []*html.Node
+            和QueryAll一样，但是如果表达式' expr '不能被解析，将会恐慌
+
+
+    func FindOne(top *html.Node, expr string) *html.Node
+        和Query一样，但如果表达式' expr '不能被解析，会出现恐慌

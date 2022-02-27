@@ -1,0 +1,105 @@
+go mod命令
+    go mod <command> [arguments]
+    command
+        init             初始化当前文件夹, 创建go.mod文件
+        download         下载依赖的module到本地cache（默认为$GOPATH/pkg/mod目录）
+        verify           验证依赖是否正确
+        edit             编辑go.mod文件 (选项有-json、-require和-exclude)
+        tidy             增加缺少的module，检查，删除错误或者不使用的modules
+        vendor           将依赖复制到vendor下
+        graph            打印模块依赖图
+        why              解释为什么需要依赖
+
+
+go mod init
+    范式 : go mod init [module]
+    作用 : 初始化并写入一个新的go.mod至当前目录中
+          实际上是创建一个以当前目录为根的新模块,文件go.mod必须不存在
+          初始化会根据引入包声明来推测模块的路径或者如果你工程中之前已经存在一些依赖包管理工具，例如godep，glide或者dep
+          要覆盖此猜测，提供模块路径作为参数 module 为当前项目名
+
+
+go mod download
+    范式 : go download [-x] [-json] [modules]
+    作用 : 下载指定名字的模块，可为选择主模块依赖的模块匹配模式,或path@version形式的模块查询
+           如果download不带参数则代表下载主模块的所有依赖
+    标志
+       -json   打印一系列JSON对象至标准输出，描述每个下载的模块
+       -x      打印实际需要执行的命令，并运行
+
+
+
+go mod edit
+    范式 : go mod edit [editing flags] [go.mod]
+    作用 : edit提供一个编辑go.mod的命令行接口，主要提供给工具或脚本使用
+          它只读取go.mod,不查找涉及模块的信息
+          默认情况下，edit读写主模块的go.mod文件，但也可以在标志后指定不同的目标文件
+    标志
+        -module         修改模块路径(go.mod文件的模块行)
+        -print          以其文本格式打印最终的go.mod，而不是将其写回go.mod
+        -json           以JSON格式打印最终的go.mod，而不是将其写回go.mod。JSON输出对应于这些Go类型
+        -fmt            重新格式化go.mod文件，不作其他改变
+
+        -go=version                 设置期望的Go语言版本
+        -dropexclude=path@version   删除给定模块路径和版本的排除项
+        -dropreplace=old[@v]        删除给定模块路径和版本的替代。如果@v省略，删除该模块不带版本的替代
+        -droprequire=path           删除给定的模块路径依赖要求的模块
+
+        -exclude=path@version       添加给定模块路径和版本的排除项
+                                    注意如果排除项已经存在-exclude=path@version是无操作的
+
+        -replace=old[@v]=new[@v]    添加给定模块路径和版本对的替代
+                                    如果old@v中的@v省略，则左侧不带版本的替代将被添加，应用于old模块路径的所有版本
+                                    如果new@v中的@v省略，新路径应为本地模块根目录，而不是模块路径
+                                    注意-replace覆盖old[@v]任何冗余的替代
+                                    因此省略@v将删除对特定版本的现有替代
+
+        -require=path@version       添加给定的模块路径和版本依赖要求的模块
+
+                                    注意-require覆盖该路径任何已存在的依赖要求的模块
+
+
+go mod tidy
+    范式 : go mod tidy [-v]
+    作用 : 确保go.mod与模块中的源代码一致
+          它添加构建当前模块的包和依赖所必须的任何缺少的模块
+          删除不提供任何有价值的包的未使用的模块
+          它也会添加任何缺少的条目至go.mod并删除任何不需要的条目
+    标志
+        -v : 打印被删除的模块的信息至标准错误输出
+
+
+go mod vendor
+    范式 : go mod vendor [-v]
+    作用 : 重置主模块的vendor目录
+          使其包含构建和测试所有主模块的包所需要的所有包
+          不包括vendor中的包的测试代码
+    标志
+        -v : 打印vendor的模块和包的名字至标准错误输出
+
+
+go mod verify
+go mod graph
+go mod why
+
+
+
+其他命令
+    go list命令
+        go list -m  主模块的打印路径
+        go list -m -f={{.Dir}}  print主模块的根目录
+        go list -m all  查看当前的依赖和版本信息
+        go list -m -versions github.com/gogf/gf  查看可下载版本
+        go list -m -json all：以 json 的方式打印依赖详情
+
+    go clean -modcache    清理module缓存
+
+
+go.mod 中的 “require“
+    通过传入 package@version 给 go mod -requirement 来精确 “指示” module 的依赖约束之外
+    go mod 还支持 query表达式
+
+    go mod 命令会对 query 表达式做求值，得出 build list 使用的包的版本
+    go mod 命令对 query 表达式进行求值的算法是 “选择最接近于比较目标的版本“
+
+    我们可以通过 go mod -require 来显式更新 go.mod 文件中的 require 段的信息
